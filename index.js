@@ -4,9 +4,13 @@ const Express = require('express')
 const Apone = require('apone')
 const Joi = require('joi')
 const Boom = require('boom')
-var rp = require('request-promise')
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const rp = require('request-promise')
 
 let app = Express()
+app.use(cors())
+app.use(bodyParser.json())
 let apone = new Apone(app)
 
 const cache = {}
@@ -26,7 +30,7 @@ const checkCache = (key, cacheObj) => {
 
   const cachedVal = cacheObj[key]
   if (cachedVal && cachedVal.ttl > Date.now()) {
-    return cachedVal
+    return cachedVal.result
   } else {
     return null
   }

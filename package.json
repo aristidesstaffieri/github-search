@@ -4,7 +4,8 @@
   "description": "A node and react app to search for repos on Github",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "client": "parcel client/index.html",
+    "server": "node index.js"
   },
   "keywords": [
     "JS",
@@ -15,11 +16,19 @@
   "license": "ISC",
   "dependencies": {
     "apone": "^1.0.0",
+    "body-parser": "^1.18.3",
     "boom": "^7.2.0",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
     "joi": "^13.3.0",
     "parcel-bundler": "^1.8.1",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "request": "^2.86.0",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1"
   }
 }
