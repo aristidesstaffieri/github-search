@@ -48,7 +48,7 @@ apone.register({
   },
   handle: (req, res, next) => {
 
-    const { q, sort='stars', order='desc' } = req.params
+    const { q, sort='stars', order='desc' } = req.query
     const headers = {
       'User-Agent': 'github_search'
     }
