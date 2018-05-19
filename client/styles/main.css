@@ -1,11 +1,24 @@
-/*$color_primary: #3e506a;*/
 
+/* main/global */
 body {
   overflow: hidden;
   margin: 0;
   font-family: Helvetica, sans-serif;
   font-weight: 100;
   color: #8fa2bd;
+}
+
+h1, h2, h3, h4, h5 {
+  margin: 0;
+}
+
+a {
+  color: #3e506a;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.5;
 }
 
 #app {
@@ -18,6 +31,7 @@ body {
     padding: 10px;
 }
 
+/* repos/repo */
 .repo_search_container {
   display: flex;
   width: 800px;
@@ -45,6 +59,59 @@ body {
   transition: all .3s ease-in-out;
 }
 
+.repo {
+  padding: 10px;
+  border-left: 3px solid #fff;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.5s ease
+}
+
+.repo span {
+  display: flex;
+  justify-content: space-between;
+}
+
+.repo:hover, .repo.active {
+  border-color: #3e506a;
+}
+
+.repo .stats {
+  width: 100px;
+}
+
+.active_repo {
+  padding: 20px;
+}
+
+/* active repo */
+.active_repo_empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.active_repo_title_row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.active_repo_info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.active_repo_stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+/* search/filters/sorts */
 .submit_btn {
   width: 80px;
   height: 100%;
@@ -102,29 +169,6 @@ body {
   color: #fff;
 }
 
-.repo {
-  padding: 10px;
-  border-left: 3px solid #fff;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: border-color 0.5s ease
-}
-
-.repo span {
-  display: flex;
-  justify-content: space-between;
-}
-
-.repo:hover, .repo.active {
-  border-color: #3e506a;
-}
-
-.repo .stats {
-  width: 100px;
-}
-
 .sorts {
   display: flex;
   justify-content: space-between;
@@ -147,7 +191,6 @@ body {
   background-color: #fff;
   color: #8fa2bd;
 }
-
 
 .chevron_asc {
   position: relative;
@@ -231,6 +274,8 @@ body {
   outline: 0;
 }
 
+
+/* filter-toggle */
 .toggle_label {
   display: flex;
   width: 160px;
@@ -247,9 +292,19 @@ body {
   background-color: #fff;
 }
 
+.react-toggle--focus .react-toggle-thumb,
+.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb {
+  outline: 0;
+  box-shadow: none;
+}
+
 .react-toggle-thumb {
   border-color: #8fa2bd;
   background-color: #8fa2bd;
+}
+
+.react-toggle-thumb:focus {
+  outline: 0;
 }
 
 .react-toggle--checked .react-toggle-thumb {
@@ -258,7 +313,6 @@ body {
 
 
 /* loader */
-
 ul{
     position: relative;
     top: 50%;

@@ -2,7 +2,7 @@ import React from 'react'
 import P from 'prop-types'
 import Toggle from 'react-toggle'
 
-import "react-toggle/style.css"
+import 'react-toggle/style.css'
 
 const SORTS = [
   'stars',
@@ -49,6 +49,7 @@ class Search extends React.Component {
           onChange={ this.handleChange } />
         <button
           type="submit"
+          disabled={ !value.length }
           className="submit_btn">
           { isLoading ? <Loader /> : 'Search' }
         </button>

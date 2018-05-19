@@ -7,35 +7,34 @@ const Boom = require('boom')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const rp = require('request-promise')
+const queryString = require('queryString')
+const cache = require('memory-cache')
+
+const CACHE_BUST = 86400000 // a day
+
+const cacheMiddleware = (durationMs) => {
+  return (req, res, next) => {
+    const key = req.originalUrl || req.url
+    const cachedVal = cache.get(key)
+    if (cachedVal) {
+      console.info('cache hit')
+      res.send(cachedVal)
+    } else {
+      res.sendResponse = res.send
+      res.send = (body) => {
+        cache.put(key, body, durationMs)
+        res.sendResponse(body)
+      }
+      next()
+    }
+  }
+}
 
 let app = Express()
 app.use(cors())
 app.use(bodyParser.json())
+app.use(cacheMiddleware(CACHE_BUST))
 let apone = new Apone(app)
-
-const cache = {}
-const CACHE_BUST = 86400000 // a day
-
-// turn this into cache middleware
-const cacheQuery = (key, value, cacheObj) => {
-  cacheObj[key] = {
-    result: value,
-    ttl: new Date().getTime()+CACHE_BUST
-  }
-}
-
-const checkCache = (key, cacheObj) => {
-  if (!cacheObj || !key) {
-    return null
-  }
-
-  const cachedVal = cacheObj[key]
-  if (cachedVal && cachedVal.ttl > Date.now()) {
-    return cachedVal.result
-  } else {
-    return null
-  }
-}
 
 apone.register({
   path: '/repos',
@@ -54,19 +53,11 @@ apone.register({
       'User-Agent': 'github_search'
     }
 
-    const queryString = `q=${q}&sort=${sort}&order=${order}`
+    const qs = `q=${q}&sort=${sort}&order=${order}`
 
-    const cacheHit = checkCache(queryString, cache)
-    if (cacheHit) {
-       res.send(cacheHit)
-       console.info('cache hit')
-       return next()
-    }
-
-    rp(`${GITHUB_URL}?${queryString}`, { headers })
+    rp(`${GITHUB_URL}?${qs}`, { headers })
       .then(resp => {
         res.send(resp)
-        cacheQuery(queryString, resp, cache)
         return next()
       })
       .catch(next)

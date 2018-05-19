@@ -6,6 +6,9 @@ import ScrollArea from 'react-scrollbar'
 import numeral from 'numeral'
 
 import Search from './components/search.js'
+import Repo from './components/repo.js'
+import ActiveRepo from './components/active_repo.js'
+
 import './styles/main.css'
 
 const LANG_QUICK_FILTERS = [
@@ -60,7 +63,12 @@ class Repos extends React.Component {
 
   getRepos() {
     this.setState({ isLoadingSearch: true })
-    const params = queryString.stringify(this.state.search)
+
+    let search = Object.assign({}, this.state.search)
+    if (search.sort === 'score') {
+      delete search.sort //score only works as default sort
+    }
+    const params = queryString.stringify(search)
     const url = `${SERVER_URL}?${params}`
 
     fetch(url)
@@ -165,55 +173,6 @@ class Repos extends React.Component {
     ]
   }
 }
-
-class Repo extends React.Component {
-  constructor(props) {
-    super(props)
-    this.clickRepo = this.clickRepo.bind(this)
-  }
-
-  clickRepo() {
-    this.props.clickRepo(this.props.repo.id)
-  }
-
-  render() {
-    const { active, repo } = this.props
-    const { name, owner, stargazers_count, score } = repo
-    return (
-      <div className={ `repo ${active && 'active'}` } onClick={ this.clickRepo }>
-        <div className="identity">
-          <span>{ `${name} by ${owner.login}` }</span>
-        </div>
-        <div className="stats">
-          <span>{ `stars: ${numeral(stargazers_count).format('0a')}` }</span>
-          <span>{ `score: ${numeral(score).format('0.0')}` }</span>
-        </div>
-      </div>
-    )
-  }
-}
-
-class ActiveRepo extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    const { repo } = this.props
-    return repo
-      ? (
-        <div className="active_repo">
-          { repo.name }
-        </div>
-      )
-      : (
-        <div className="active_repo">
-          Explore Github Repositories
-        </div>
-      )
-  }
-}
-
 
 var mountNode = document.getElementById('app')
 ReactDOM.render(<Repos />, mountNode)
