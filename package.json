@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "client": "parcel client/index.html",
-    "server": "node index.js"
+    "server": "node index.js",
+    "start": "npm-run-parallel server client"
   },
   "keywords": [
     "JS",

@@ -7,7 +7,6 @@ const Boom = require('boom')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const rp = require('request-promise')
-const queryString = require('queryString')
 const cache = require('memory-cache')
 
 const CACHE_BUST = 86400000 // a day
@@ -71,4 +70,4 @@ app.use((err, req, res, next) => {
   res.status(500).send(new Boom(err).output)
 })
 
-app.listen(3000, console.log('listening on port 3000'))
+app.listen(3000, console.log('server listening on port 3000'))
