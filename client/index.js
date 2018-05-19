@@ -3,6 +3,7 @@ import P from 'prop-types'
 import ReactDOM from 'react-dom'
 import queryString from 'query-string'
 import ScrollArea from 'react-scrollbar'
+import numeral from 'numeral'
 
 import Search from './components/search.js'
 import './styles/main.css'
@@ -30,7 +31,8 @@ class Repos extends React.Component {
         order: 'desc' // or asc
       },
       activeLangFilters: [],
-      isLoadingSearch: false
+      isLoadingSearch: false,
+      activeRepo: null
     }
 
     this.getRepos = this.getRepos.bind(this)
@@ -39,6 +41,7 @@ class Repos extends React.Component {
     this.setOrder = this.setOrder.bind(this)
     this.setFilter = this.setFilter.bind(this)
     this.setSort = this.setSort.bind(this)
+    this.setActiveRepo = this.setActiveRepo.bind(this)
   }
 
   validateSearch(key, val) {
@@ -115,8 +118,15 @@ class Repos extends React.Component {
     this.setSearch('sort', newOrder)
   }
 
+  setActiveRepo(repoId) {
+    this.setState({
+      activeRepo: repoId
+    })
+  }
+
   render() {
-    const { activeLangFilters, search, isLoadingSearch } = this.state
+    const { activeLangFilters, search, isLoadingSearch, repos, activeRepo } = this.state
+    const activeRepoObj = repos.find( repo => repo.id === activeRepo)
 
     return [
       <div className="repo_search_container" key="repo_search">
@@ -136,14 +146,21 @@ class Repos extends React.Component {
         </div>
         <div className="repo_list_container">
           {
-            this.state.repos.map((repo, i) => {
-              return <Repo key={ `${repo.name}_${i}` } repo={ repo } />
+            repos.map((repo, i) => {
+              return (
+                <Repo
+                  key={ `${repo.name}_${i}` }
+                  repo={ repo }
+                  active={ activeRepoObj && activeRepoObj.id === repo.id }
+                  clickRepo={ this.setActiveRepo } />
+              )
             })
           }
         </div>
       </div>,
       <div className="selected_repo_container" key="repo_container">
-
+        <ActiveRepo
+          repo={ activeRepoObj } />
       </div>
     ]
   }
@@ -152,15 +169,48 @@ class Repos extends React.Component {
 class Repo extends React.Component {
   constructor(props) {
     super(props)
+    this.clickRepo = this.clickRepo.bind(this)
+  }
+
+  clickRepo() {
+    this.props.clickRepo(this.props.repo.id)
   }
 
   render() {
-    const { name, owner } = this.props.repo
+    const { active, repo } = this.props
+    const { name, owner, stargazers_count, score } = repo
     return (
-      <div className="repo">
-        { `${name} by ${owner.login}` }
+      <div className={ `repo ${active && 'active'}` } onClick={ this.clickRepo }>
+        <div className="identity">
+          <span>{ `${name} by ${owner.login}` }</span>
+        </div>
+        <div className="stats">
+          <span>{ `stars: ${numeral(stargazers_count).format('0a')}` }</span>
+          <span>{ `score: ${numeral(score).format('0.0')}` }</span>
+        </div>
       </div>
     )
+  }
+}
+
+class ActiveRepo extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    const { repo } = this.props
+    return repo
+      ? (
+        <div className="active_repo">
+          { repo.name }
+        </div>
+      )
+      : (
+        <div className="active_repo">
+          Explore Github Repositories
+        </div>
+      )
   }
 }
 
