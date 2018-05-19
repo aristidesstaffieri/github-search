@@ -65,10 +65,12 @@ class Repos extends React.Component {
     this.setState({ isLoadingSearch: true })
 
     let search = Object.assign({}, this.state.search)
-    const languages = this.state.activeLangFilters.reduce((prev, curr) => {
-      return `language:${prev}&language:${curr}`
-    })
-    search.q = search.q.concat(`+${languages}`)
+    if (this.state.activeLangFilters.length) {
+      const languages = this.state.activeLangFilters.reduce((prev, curr) => {
+        return `language:${prev}+language:${curr}`
+      })
+      search.q = search.q.concat(`+${languages}`)
+    }
 
     if (search.sort === 'score') {
       delete search.sort //score only works as default sort

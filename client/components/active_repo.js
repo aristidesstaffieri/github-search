@@ -24,7 +24,7 @@ class ActiveRepo extends React.Component {
           </div>
           <div className="active_repo_info">
             <div>
-              <p>Primary Language - { repo.language }</p>
+              <p>Primary Language - { repo.language || 'Unknown' }</p>
               <p>{ repo.license ? repo.license.name : 'License Unknown' }</p>
             </div>
             <div>
