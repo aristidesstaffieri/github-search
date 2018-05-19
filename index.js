@@ -16,6 +16,7 @@ let apone = new Apone(app)
 const cache = {}
 const CACHE_BUST = 86400000 // a day
 
+// turn this into cache middleware
 const cacheQuery = (key, value, cacheObj) => {
   cacheObj[key] = {
     result: value,
@@ -48,10 +49,11 @@ apone.register({
   },
   handle: (req, res, next) => {
 
-    const { q, sort='stars', order='desc' } = req.query
+    const { q, sort, order='desc' } = req.query
     const headers = {
       'User-Agent': 'github_search'
     }
+
     const queryString = `q=${q}&sort=${sort}&order=${order}`
 
     const cacheHit = checkCache(queryString, cache)

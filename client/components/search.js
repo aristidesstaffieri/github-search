@@ -1,14 +1,12 @@
 import React from 'react'
 import P from 'prop-types'
+import Toggle from 'react-toggle'
 
-const LANG_QUICK_FILTERS = [
-  'react',
-  'javascript',
-  'clojure',
-  'elixir',
-  'go',
-  'Rust',
-  'Node.js'
+import "react-toggle/style.css"
+
+const SORTS = [
+  'stars',
+  'scores'
 ]
 
 class Search extends React.Component {
@@ -29,37 +27,98 @@ class Search extends React.Component {
   }
 
    render() {
+     const {
+       activeOrder,
+       activeSort,
+       value,
+       activeFilters,
+       filters,
+       setOrder,
+       setFilter,
+       setSort,
+       isLoading
+     } = this.props
+
      return [
-       <form onSubmit={ this.handleSubmit }>
+       <form onSubmit={ this.handleSubmit } key="search_form">
         <input
           type="text"
           placeholder="Github Repositories"
           className="repo_input"
-          value={ this.props.value }
+          value={ value }
           onChange={ this.handleChange } />
         <button
           type="submit"
           className="submit_btn">
-          Search
+          { isLoading ? <Loader /> : 'Search' }
         </button>
       </form>,
-      <div className="lang_filters">
+      <div className="lang_filters" key="lang_filters">
         {
-          LANG_QUICK_FILTERS.map(filter => {
-            return <div key={filter} className="filter">{ filter }</div>
+          filters.map(filter => {
+            return (
+              <div
+                key={ filter }
+                className={ `filter ${ activeFilters.indexOf(filter) >= 0 && 'active' }`}
+                onClick={ setFilter.bind(this, filter)}
+                >{ filter }
+              </div>
+            )
           })
         }
+      </div>,
+      <div className="sorts" key="sorts">
+      <label className="toggle_label">
+        <Toggle
+          checked={ activeSort === 'stars' }
+          name='starsOrScores'
+          value={ activeSort }
+          onChange={ setSort } />
+          <span>{ `sort by ${ activeSort }` }</span>
+      </label>
+        <button className={ `order chevron_${ activeOrder }` } onClick={ setOrder } />
       </div>
      ]
    }
 }
 
 Search.propTypes = {
-  onFormSubmit: P.func
+  onFormSubmit: P.func,
+  value: P.string.isRequired,
+  filters: P.array,
+  activeFilters: P.array,
+  activeOrder: P.string.isRequired,
+  activeSort: P.string.isRequired,
+  setOrder: P.func,
+  setFilter: P.func,
+  setSort: P.func,
+  isLoading: P.bool
 }
 
 Search.defaultProps = {
-  onFormSubmit: () => false //default to no op
+  onFormSubmit: () => false, //default to no op
+  setOrder: () => false,
+  setFilter: () => false,
+  setSort: () => false,
+  activeFilters: [],
+  isLoading: false
 }
 
 export default Search
+
+
+class Loader extends React.Component {
+  render() {
+    return (
+      <span className="loader">
+        <ul>
+           <li></li>
+           <li></li>
+           <li></li>
+           <li></li>
+           <li></li>
+       </ul>
+      </span>
+    )
+  }
+}
